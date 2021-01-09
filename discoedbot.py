@@ -1,29 +1,53 @@
+# インストールした discord.py を読み込む
 import discord
-import datetime
 
+# 自分のBotのアクセストークンに置き換えてください
 TOKEN = 'Nzk3NTI3NTg3MDk0MDAzNzg0.X_nxcg.kJrMfQMYMzZNXURJEAcIcKtxGrM'
 
+
+# 接続に必要なオブジェクトを生成
 client = discord.Client()
-pretime_dict = {}
 
+# 起動時に動作する処理
 @client.event
-async def on_voice_state_update(before, after):
-  print("ボイスチャンネルで変化がありました")
+async def on_ready():
+    # 起動したらターミナルにログイン通知が表示される
+    print('ログインしました')
 
-  if((before.voice.self_mute is not after.voice.self_mute) or (before.voice.self_deaf is not after.voice.self_deaf)):
-    print("ボイスチャンネルでミュート設定の変更がありました")
-    return
+# メッセージ受信時に動作する処理
+@client.event
+async def on_message(message):
+    # メッセージ送信者がBotだった場合は無視する
+    if message.author.bot:
+        return
+    # 「x」と発言したら「y」が返る処理
+    if message.content == 'おはよう':
+        await message.channel.send('今日も一日頑張ろう！')
 
-  if(before.voice_channel is None):
-    pretime_dict[after.name] = datetime.datetime.now()
-  elif(after.voice_channel is None):
-    duration_time = pretime_dict[before.name] - datetime.datetime.now()
-    duration_time_adjust = int(duration_time.total_seconds()) * -1
+    if message.author.bot:
+        return
+    if message.content == 'おやすみ':
+        await message.channel.send('ゆっくり休んでね')
 
-    reply_channel_name = "general"
-    reply_channel = [channel for channel in before.server.channels if channel.name == reply_channel_name][0]
-    reply_text = after.name + "　が　"+ before.voice_channel.name + "　から抜けました。　通話時間：" + str(duration_time_adjust) +"秒"
+    if message.author.bot:
+        return
+    if message.content == 'ただいま':
+        await message.channel.send('おかえり')
 
-    await client.send_message(reply_channel ,reply_text)
+    if message.author.bot:
+        return
+    if message.content == '疲れた':
+        await message.channel.send('疲れた時は休もうね')
 
-client.run(TOKEN)#ボットのトークン
+    if message.author.bot:
+        return
+    if message.content == '大好き':
+        await message.channel.send('ありがとう')
+        
+    if message.author.bot:
+        return
+    if message.content == 'いってきます':
+        await message.channel.send('いってらっしゃい')
+        
+    # Botの起動とDiscordサーバーへの接続
+client.run(TOKEN)
